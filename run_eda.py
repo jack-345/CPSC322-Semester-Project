@@ -154,7 +154,47 @@ plt.savefig('figures/figure2_climate_distributions.pdf')
 print("Figure 2: Climate variable distributions (frequency diagrams)")
 plt.show()
 
+#Agriculture variable graphs (soil health, fertilizer, irrigation access, pesticide use, soil health)
 
+
+plt.figure(figsize=(12, 8))
+
+plt.subplot(2, 2, 1)
+irrigation = get_column_numeric(table, header, 'Irrigation_Access_%')
+plt.hist(irrigation, bins=25, color='lightblue', edgecolor='black')
+plt.xlabel('Irrigation Access (%)')
+plt.ylabel('Frequency')
+plt.title('Irrigation Access Distribution')
+plt.grid(True, alpha=0.3)
+
+plt.subplot(2, 2, 2)
+pesticide = get_column_numeric(table, header, 'Pesticide_Use_KG_per_HA')
+plt.hist(pesticide, bins=25, color='lightgreen', edgecolor='black')
+plt.xlabel('Pesticide Use (KG/HA)')
+plt.ylabel('Frequency')
+plt.title('Pesticide Use Distribution')
+plt.grid(True, alpha=0.3)
+
+plt.subplot(2, 2, 3)
+fertilizer = get_column_numeric(table, header, 'Fertilizer_Use_KG_per_HA')
+plt.hist(fertilizer, bins=25, color='wheat', edgecolor='black')
+plt.xlabel('Fertilizer Use (KG/HA)')
+plt.ylabel('Frequency')
+plt.title('Fertilizer Use Distribution')
+plt.grid(True, alpha=0.3)
+
+plt.subplot(2, 2, 4)
+soil = get_column_numeric(table, header, 'Soil_Health_Index')
+plt.hist(soil, bins=25, color='sandybrown', edgecolor='black')
+plt.xlabel('Soil Health Index')
+plt.ylabel('Frequency')
+plt.title('Soil Health Distribution')
+plt.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.savefig('figures/figure3_agricultural_distributions.pdf')
+print("Figure 3: Agricultural variable distributions (frequency diagrams)")
+plt.show()
 
 
 
