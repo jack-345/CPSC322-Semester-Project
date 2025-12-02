@@ -40,7 +40,7 @@ def compute_percentile(values,percentile):
     weight = index - lower 
     if upper >= len(sorted_values):
         return sorted_values[lower]
-    return sorted_values[lower] * (1- weight) + sorted_values[upper] * weight
+    return sorted_values[int(lower)]* (1- weight) + sorted_values[int(upper)] * weight
 
 filename = 'climate_change_impact_on_agriculture_2024.csv'
 header,table = load_data(filename)
