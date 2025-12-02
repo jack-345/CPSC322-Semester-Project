@@ -76,8 +76,18 @@ for row in table:
     except:
         yield_catgory.append('Unknown')
 
-        
-                       
+category_count = get_frequency_table(yield_catgory)
+print("\n Class Distribution: ") 
+for category in ['Low', 'Medium', 'High']:
+    count = category_count.get(category, 0)
+    percentage = (count/len(yield_catgory)) * 100
+    print(f" {category}: {count} ({percentage:.1f}%)")
+
+    
+           
+
+
+
 
 
 
