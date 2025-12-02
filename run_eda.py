@@ -42,3 +42,12 @@ def compute_percentile(values,percentile):
         return sorted_values[lower]
     return sorted_values[lower] * (1- weight) + sorted_values[upper] * weight
 
+filename = 'climate_change_impact_on_agriculture_2024.csv'
+header,table = load_data(filename)
+
+print("=" * 70)
+print("Exploratory Data Analysis: Climate Change Impact on Agriculture")
+print("Team: Kim Lenz and Jack Oh")
+print("=" * 70)
+print(f"Dataset: {len(table)} instances, {len(header)} attributes")
+
