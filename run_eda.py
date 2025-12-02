@@ -63,5 +63,22 @@ print(f"Medium: {percent_33:.2f} - {percent_67:.2f} MT/HA")
 print(f"High: {percent_67:.2f} MT/HA")
 
 
+yield_catgory = []
+for row in table:
+    try:
+        yield_value = float(row[header.index('Crop_Yield_MT_per_HA')])
+        if yield_value < percent_33:
+            yield_catgory.append('Low')
+        elif yield_value < 67:
+            yield_catgory.append('Medium')
+        else:
+            yield_catgory.append('High')
+    except:
+        yield_catgory.append('Unknown')
+
+        
+                       
+
+
 
 
