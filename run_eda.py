@@ -336,6 +336,10 @@ print("Figure 6: Scatter plots showing interesting relationships")
 plt.show()
 
 
+#AI ACKNOWLEDGEMENT 
+#graphs created using Claude AI
+#editing and corrections of code done using Claude AI
+
 
 
 
