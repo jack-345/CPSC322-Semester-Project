@@ -83,8 +83,12 @@ for category in ['Low', 'Medium', 'High']:
     percentage = (count/len(yield_catgory)) * 100
     print(f" {category}: {count} ({percentage:.1f}%)")
 
-    
-           
+
+#Frequency Table for Target Variable Distribution 
+
+
+
+
 
 
 
