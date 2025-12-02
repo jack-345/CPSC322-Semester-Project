@@ -197,6 +197,38 @@ print("Figure 3: Agricultural variable distributions (frequency diagrams)")
 plt.show()
 
 
+#Categorical Variables (country, region, crop type, adaption strategies)
+
+plt.figure(figsize=(14, 10))
+
+categorical_cols = ['Country', 'Region', 'Crop_Type', 'Adaptation_Strategies']
+
+for i, col_name in enumerate(categorical_cols, 1):
+    plt.subplot(2, 2, i)
+    
+    values = get_column(table, header, col_name)
+    freq_dict = get_frequency_table(values)
+    sorted_items = sorted(freq_dict.items(), key=lambda x: x[1], reverse=True)[:10]
+    
+    labels = [item[0] for item in sorted_items]
+    counts = [item[1] for item in sorted_items]
+    
+    plt.barh(labels, counts, color='steelblue', edgecolor='black')
+    plt.xlabel('Count')
+    plt.ylabel(col_name.replace('_', ' '))
+    plt.title(f'Top 10 {col_name.replace("_", " ")}')
+    plt.grid(True, axis='x', alpha=0.3)
+
+plt.tight_layout()
+plt.savefig('figures/figure4_categorical_distributions.pdf')
+print("Figure 4: Categorical variable distributions (frequency diagrams)")
+plt.show()
+
+
+
+
+
+
 
 
 
