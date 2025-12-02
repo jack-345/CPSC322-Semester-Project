@@ -51,3 +51,17 @@ print("Team: Kim Lenz and Jack Oh")
 print("=" * 70)
 print(f"Dataset: {len(table)} instances, {len(header)} attributes")
 
+#target variable for crop yield value into categories : Assign High, Medium, or Low Crop yield --> dealing with the continuous variable issue
+
+crop_yield = get_column_numeric(table, header, 'Crop_Yield_MT_per_HA')
+percent_33 = compute_percentile(crop_yield,33)
+percent_67 = compute_percentile(crop_yield,67)
+
+print(f"\n Target Variable: Yield Category")
+print(f"Low: {percent_33:.2f} MT/HA")
+print(f"Medium: {percent_33:.2f} - {percent_67:.2f} MT/HA")
+print(f"High: {percent_67:.2f} MT/HA")
+
+
+
+
