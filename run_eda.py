@@ -86,8 +86,73 @@ for category in ['Low', 'Medium', 'High']:
 
 #Frequency Table for Target Variable Distribution 
 
+plt.figure(figsize=(12, 5))
 
+plt.subplot(1, 2, 1)
+plt.hist(crop_yield, bins=30, color='skyblue', edgecolor='black')
+plt.axvline(percent_33, color='red', linestyle='--', linewidth=2, label='Low/Medium')
+plt.axvline(percent_67, color='orange', linestyle='--', linewidth=2, label='Medium/High')
+plt.xlabel('Crop Yield (MT per HA)')
+plt.ylabel('Frequency')
+plt.title('Crop Yield Distribution (Continuous)')
+plt.legend()
+plt.grid(True, alpha=0.3)
 
+plt.subplot(1, 2, 2)
+categories = ['Low', 'Medium', 'High']
+counts = [category_count.get(cat, 0) for cat in categories]
+colors =  ['#ff6b6b','#ffd93d','#6bcf7f']
+plt.bar(categories, counts, color=colors, edgecolor='black')
+plt.xlabel('Yield Category')
+plt.ylabel('Count')
+plt.title('Target Variable: Class Distribution')
+plt.grid(True, axis='y', alpha=0.3)
+
+plt.tight_layout()
+plt.savefig('figures/figure1_target_distribution.pdf')
+print("\n Figure 1: Target variable distribution (frequency diagrams)")
+plt.show()
+
+#Climate variables -- Frequency Diagram
+
+plt.figure(figsize=(12, 8))
+
+plt.subplot(2, 2, 1)
+temp = get_column_numeric(table, header, 'Average_Temperature_C')
+plt.hist(temp, bins=25, color='coral', edgecolor='black')
+plt.xlabel('Temperature (°C)')
+plt.ylabel('Frequency')
+plt.title('Temperature Distribution')
+plt.grid(True, alpha=0.3)
+
+plt.subplot(2, 2, 2)
+precip = get_column_numeric(table, header, 'Total_Precipitation_mm')
+plt.hist(precip, bins=25, color='skyblue', edgecolor='black')
+plt.xlabel('Precipitation (mm)')
+plt.ylabel('Frequency')
+plt.title('Precipitation Distribution')
+plt.grid(True, alpha=0.3)
+
+plt.subplot(2, 2, 3)
+co2 = get_column_numeric(table, header, 'CO2_Emissions_MT')
+plt.hist(co2, bins=25, color='lightgray', edgecolor='black')
+plt.xlabel('CO2 Emissions (MT)')
+plt.ylabel('Frequency')
+plt.title('CO2 Emissions Distribution')
+plt.grid(True, alpha=0.3)
+
+plt.subplot(2, 2, 4)
+weather = get_column_numeric(table, header, 'Extreme_Weather_Events')
+plt.hist(weather, bins=20, color='salmon', edgecolor='black')
+plt.xlabel('Extreme Weather Events')
+plt.ylabel('Frequency')
+plt.title('Extreme Weather Distribution')
+plt.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.savefig('figures/figure2_climate_distributions.pdf')
+print("Figure 2: Climate variable distributions (frequency diagrams)")
+plt.show()
 
 
 
