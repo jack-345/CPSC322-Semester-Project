@@ -36,7 +36,7 @@ def compute_percentile(values,percentile):
     sorted_values = sorted(values)
     index = (len(sorted_values) - 1) * percentile/100
     lower = int(index)
-    upper = index - lower
+    upper = lower + 1
     weight = index - lower 
     if upper >= len(sorted_values):
         return sorted_values[lower]
@@ -240,9 +240,9 @@ for i, (col_name, label) in enumerate(key_vars, 1):
     
     # Get data for each category
     values = get_column_numeric(table, header, col_name)
-    low_vals = [values[j] for j, cat in enumerate(yield_category) if cat == 'Low' and j < len(values)]
-    med_vals = [values[j] for j, cat in enumerate(yield_category) if cat == 'Medium' and j < len(values)]
-    high_vals = [values[j] for j, cat in enumerate(yield_category) if cat == 'High' and j < len(values)]
+    low_vals = [values[j] for j, cat in enumerate(yield_catgory) if cat == 'Low' and j < len(values)]
+    med_vals = [values[j] for j, cat in enumerate(yield_catgory) if cat == 'Medium' and j < len(values)]
+    high_vals = [values[j] for j, cat in enumerate(yield_catgory) if cat == 'High' and j < len(values)]
     
     # Create box plot
     data_to_plot = [low_vals, med_vals, high_vals]
