@@ -69,7 +69,7 @@ for row in table:
         yield_value = float(row[header.index('Crop_Yield_MT_per_HA')])
         if yield_value < percent_33:
             yield_catgory.append('Low')
-        elif yield_value < 67:
+        elif yield_value < percent_67:
             yield_catgory.append('Medium')
         else:
             yield_catgory.append('High')
