@@ -83,7 +83,6 @@ for category in ['Low', 'Medium', 'High']:
     percentage = (count/len(yield_catgory)) * 100
     print(f" {category}: {count} ({percentage:.1f}%)")
 
-
 # Figure 1
 plt.figure(figsize=(12, 5))
 plt.subplot(1, 2, 1)
@@ -103,6 +102,7 @@ plt.title('Class Distribution')
 
 plt.tight_layout()
 plt.savefig('figures/figure1_target.pdf')
+plt.savefig('figures/figure1_target.png', dpi=150)
 print("Figure 1")
 plt.close()
 
@@ -130,7 +130,8 @@ plt.title('Weather Events')
 
 plt.tight_layout()
 plt.savefig('figures/figure2_climate.pdf')
-print("Figure 2")
+plt.savefig('figures/figure2_climate.png', dpi=150)
+print(" Figure 2")
 plt.close()
 
 # Figure 3: Agriculture
@@ -157,7 +158,8 @@ plt.title('Soil Health')
 
 plt.tight_layout()
 plt.savefig('figures/figure3_agriculture.pdf')
-print("Figure 3")
+plt.savefig('figures/figure3_agriculture.png', dpi=150)
+print("[✓] Figure 3")
 plt.close()
 
 # Figure 4: Categorical
@@ -173,6 +175,7 @@ for i, col in enumerate(['Country', 'Region', 'Crop_Type', 'Adaptation_Strategie
 
 plt.tight_layout()
 plt.savefig('figures/figure4_categorical.pdf')
+plt.savefig('figures/figure4_categorical.png', dpi=150)
 print("Figure 4")
 plt.close()
 
@@ -195,6 +198,7 @@ for i, (col, label) in enumerate([
 
 plt.tight_layout()
 plt.savefig('figures/figure5_boxplots.pdf')
+plt.savefig('figures/figure5_boxplots.png', dpi=150)
 print("Figure 5")
 plt.close()
 
@@ -222,8 +226,10 @@ for i, (col, label) in enumerate([
 
 plt.tight_layout()
 plt.savefig('figures/figure6_scatter.pdf')
+plt.savefig('figures/figure6_scatter.png', dpi=150)
 print("Figure 6")
 plt.close()
+
 
 #AI ACKNOWLEDGEMENT 
 #graphs created using Claude AI
