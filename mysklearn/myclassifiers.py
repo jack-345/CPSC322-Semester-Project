@@ -1,5 +1,6 @@
 from mysklearn import myutils
 import math
+import random
 from mysklearn.mysimplelinearregressor import MySimpleLinearRegressor
 
 class MySimpleLinearRegressionClassifier:
@@ -484,3 +485,211 @@ class MyDecisionTreeClassifier:
             weighted_entropy_sum += weight * self._calculate_entropy(partition)
 
         return current_entropy - weighted_entropy_sum
+    
+
+class MyRandomForestClassifier:
+    """Represents a random forest classifier (ensemble of decision trees).
+    
+    Attributes:
+        n_trees(int): Number of trees in the forest
+        max_depth(int): Maximum depth of each tree (None for unlimited)
+        min_samples_split(int): Minimum samples required to split a node
+        max_features(int): Number of features to consider for each split
+        trees(list): List of trained decision trees
+    """
+    
+    def __init__(self, n_trees=10, max_depth=None, min_samples_split=2, max_features=None):
+        """Initializer for MyRandomForestClassifier."""
+        self.n_trees = n_trees
+        self.max_depth = max_depth
+        self.min_samples_split = min_samples_split
+        self.max_features = max_features
+        self.trees = []
+    
+    def fit(self, X_train, y_train):
+        """Fits a random forest classifier to X_train and y_train."""
+        self.trees = []
+        n_samples = len(X_train)
+        n_features = len(X_train[0])
+        
+        # Determine max_features if not specified
+        if self.max_features is None:
+            self.max_features = int(n_features ** 0.5)
+        
+        # Build each tree
+        for _ in range(self.n_trees):
+            # Bootstrap sample (random sample with replacement)
+            bootstrap_indices = [random.randint(0, n_samples - 1) for _ in range(n_samples)]
+            X_bootstrap = [X_train[i] for i in bootstrap_indices]
+            y_bootstrap = [y_train[i] for i in bootstrap_indices]
+            
+            # Train tree on bootstrap sample
+            tree = self._build_tree(X_bootstrap, y_bootstrap, depth=0)
+            self.trees.append(tree)
+    
+    def predict(self, X_test):
+        """Makes predictions for test instances in X_test."""
+        predictions = []
+        
+        for instance in X_test:
+            # Get prediction from each tree
+            tree_predictions = []
+            for tree in self.trees:
+                pred = self._predict_tree(instance, tree)
+                tree_predictions.append(pred)
+            
+            # Majority vote
+            majority_vote = self._get_majority_vote(tree_predictions)
+            predictions.append(majority_vote)
+        
+        return predictions
+    
+    def _build_tree(self, X, y, depth):
+        """Recursively builds a decision tree."""
+        # Base case 1: Max depth reached
+        if self.max_depth is not None and depth >= self.max_depth:
+            return self._create_leaf(y)
+        
+        # Base case 2: Too few samples to split
+        if len(X) < self.min_samples_split:
+            return self._create_leaf(y)
+        
+        # Base case 3: All instances have same label
+        if len(set(y)) == 1:
+            return self._create_leaf(y)
+        
+        # Base case 4: No features left
+        if len(X[0]) == 0:
+            return self._create_leaf(y)
+        
+        # Select random subset of features
+        n_features = len(X[0])
+        available_features = list(range(n_features))
+        selected_features = random.sample(available_features, 
+                                         min(self.max_features, n_features))
+        
+        # Find best split among selected features
+        best_feature = self._select_best_feature(X, y, selected_features)
+        
+        if best_feature is None:
+            return self._create_leaf(y)
+        
+        # Create tree node
+        tree = ['Attribute', f'att{best_feature}']
+        
+        # Get unique values for the best feature
+        feature_values = sorted(set(row[best_feature] for row in X))
+        
+        # Recursively build subtrees
+        for value in feature_values:
+            X_subset = []
+            y_subset = []
+            for i in range(len(X)):
+                if X[i][best_feature] == value:
+                    X_subset.append(X[i])
+                    y_subset.append(y[i])
+            
+            if len(X_subset) > 0:
+                subtree = self._build_tree(X_subset, y_subset, depth + 1)
+                tree.append(['Value', value, subtree])
+            else:
+                tree.append(['Value', value, self._create_leaf(y)])
+        
+        return tree
+    
+    def _select_best_feature(self, X, y, available_features):
+        """Selects best feature using information gain."""
+        best_feature = None
+        best_gain = -1
+        current_entropy = self._calculate_entropy(y)
+        
+        for feature_index in available_features:
+            gain = self._calculate_information_gain(X, y, feature_index, current_entropy)
+            if gain > best_gain:
+                best_gain = gain
+                best_feature = feature_index
+        
+        if best_gain > 0.0:
+            return best_feature
+        return None
+    
+    def _calculate_entropy(self, y):
+        """Calculates entropy of labels."""
+        if len(y) == 0:
+            return 0
+        
+        label_counts = {}
+        for label in y:
+            label_counts[label] = label_counts.get(label, 0) + 1
+        
+        entropy = 0
+        total = len(y)
+        for count in label_counts.values():
+            if count > 0:
+                prob = count / total
+                entropy -= prob * math.log2(prob)
+        
+        return entropy
+    
+    def _calculate_information_gain(self, X, y, feature_index, current_entropy):
+        """Calculates information gain for a feature."""
+        partitions = {}
+        for i in range(len(X)):
+            value = X[i][feature_index]
+            if value not in partitions:
+                partitions[value] = []
+            partitions[value].append(y[i])
+        
+        weighted_entropy = 0
+        total = len(y)
+        for partition_labels in partitions.values():
+            weight = len(partition_labels) / total
+            weighted_entropy += weight * self._calculate_entropy(partition_labels)
+        
+        return current_entropy - weighted_entropy
+    
+    def _create_leaf(self, y):
+        """Creates a leaf node with majority class."""
+        label_counts = {}
+        for label in y:
+            label_counts[label] = label_counts.get(label, 0) + 1
+        
+        majority_label = max(label_counts, key=label_counts.get)
+        return ['Leaf', majority_label, len(y), len(y)]
+    
+    def _predict_tree(self, instance, tree):
+        """Makes prediction using one tree."""
+        if tree[0] == 'Leaf':
+            return tree[1]
+        
+        attribute_name = tree[1]
+        attribute_index = int(attribute_name.replace('att', ''))
+        instance_value = instance[attribute_index]
+        
+        for i in range(2, len(tree)):
+            value_list = tree[i]
+            if value_list[1] == instance_value:
+                return self._predict_tree(instance, value_list[2])
+        
+        #  return first leaf found
+        return self._get_default_prediction(tree)
+    
+    def _get_default_prediction(self, tree):
+        """Gets default prediction when path doesn't exist."""
+        if tree[0] == 'Leaf':
+            return tree[1]
+        if len(tree) > 2:
+            return self._get_default_prediction(tree[2][2])
+        return None
+    
+    def _get_majority_vote(self, predictions):
+        """Gets majority vote from predictions."""
+        vote_counts = {}
+        for pred in predictions:
+            if pred is not None:
+                vote_counts[pred] = vote_counts.get(pred, 0) + 1
+        
+        if not vote_counts:
+            return None
+        
+        return max(vote_counts, key=vote_counts.get)
