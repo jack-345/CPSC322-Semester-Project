@@ -100,26 +100,26 @@ def compute_summary_stats(values):
     sorted_vals = sorted(values)
     n = len(sorted_vals)
     
-    # Basic stats
+    
     min_val = sorted_vals[0]
     max_val = sorted_vals[-1]
     range_val = max_val - min_val
     mean = sum(sorted_vals) / n
     
-    # Median
+    
     if n % 2 == 0:
         median = (sorted_vals[n//2 - 1] + sorted_vals[n//2]) / 2
     else:
         median = sorted_vals[n//2]
     
-    # Quartiles
+    
     q1_idx = n // 4
     q3_idx = (3 * n) // 4
     q1 = sorted_vals[q1_idx]
     q3 = sorted_vals[q3_idx]
     iqr = q3 - q1
     
-    # Standard deviation
+    
     variance = sum((x - mean) ** 2 for x in sorted_vals) / n
     std_dev = variance ** 0.5
     
@@ -137,11 +137,11 @@ def compute_summary_stats(values):
         'IQR': iqr
     }
 
-# Load data
+
 filename = 'climate_change_impact_on_agriculture_2024.csv'
 header, table = load_data(filename)
 
-# Numeric features
+
 numeric_features = [
     'Average_Temperature_C', 'Total_Precipitation_mm', 
     'CO2_Emissions_MT', 'Crop_Yield_MT_per_HA',
@@ -177,7 +177,9 @@ for feat_name in numeric_features:
     print(f"  Max:    {stats['max']:.2f}")
     print(f"  Range:  {stats['range']:.2f}")
     print(f"  IQR:    {stats['IQR']:.2f}")
-    
+
+    #summary stats created with the help of Claude AI and course materials 
+
 # Figure 1
 plt.figure(figsize=(12, 5))
 plt.subplot(1, 2, 1)
