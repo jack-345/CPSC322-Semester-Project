@@ -83,6 +83,101 @@ for category in ['Low', 'Medium', 'High']:
     percentage = (count/len(yield_catgory)) * 100
     print(f" {category}: {count} ({percentage:.1f}%)")
 
+
+import csv
+
+def load_data(filename):
+    table = []
+    with open(filename, 'r') as file:
+        reader = csv.reader(file)
+        header = next(reader)
+        for row in reader:
+            table.append(row)
+    return header, table
+
+def compute_summary_stats(values):
+    """Calculate summary statistics for a list of numeric values."""
+    sorted_vals = sorted(values)
+    n = len(sorted_vals)
+    
+    # Basic stats
+    min_val = sorted_vals[0]
+    max_val = sorted_vals[-1]
+    range_val = max_val - min_val
+    mean = sum(sorted_vals) / n
+    
+    # Median
+    if n % 2 == 0:
+        median = (sorted_vals[n//2 - 1] + sorted_vals[n//2]) / 2
+    else:
+        median = sorted_vals[n//2]
+    
+    # Quartiles
+    q1_idx = n // 4
+    q3_idx = (3 * n) // 4
+    q1 = sorted_vals[q1_idx]
+    q3 = sorted_vals[q3_idx]
+    iqr = q3 - q1
+    
+    # Standard deviation
+    variance = sum((x - mean) ** 2 for x in sorted_vals) / n
+    std_dev = variance ** 0.5
+    
+    return {
+        'count': n,
+        'min': min_val,
+        'max': max_val,
+        'range': range_val,
+        'mean': mean,
+        'median': median,
+        'std': std_dev,
+        'Q1': q1,
+        'Q2': median,
+        'Q3': q3,
+        'IQR': iqr
+    }
+
+# Load data
+filename = 'climate_change_impact_on_agriculture_2024.csv'
+header, table = load_data(filename)
+
+# Numeric features
+numeric_features = [
+    'Average_Temperature_C', 'Total_Precipitation_mm', 
+    'CO2_Emissions_MT', 'Crop_Yield_MT_per_HA',
+    'Extreme_Weather_Events', 'Irrigation_Access_%', 
+    'Pesticide_Use_KG_per_HA', 'Fertilizer_Use_KG_per_HA', 
+    'Soil_Health_Index'
+]
+
+print("=" * 70)
+print("SUMMARY STATISTICS FOR NUMERIC FEATURES")
+print("=" * 70)
+
+for feat_name in numeric_features:
+    feat_idx = header.index(feat_name)
+    values = []
+    for row in table:
+        try:
+            values.append(float(row[feat_idx]))
+        except:
+            pass
+    
+    stats = compute_summary_stats(values)
+    
+    print(f"\n{feat_name}:")
+    print(f"  Count:  {stats['count']}")
+    print(f"  Mean:   {stats['mean']:.2f}")
+    print(f"  Median: {stats['median']:.2f}")
+    print(f"  Std:    {stats['std']:.2f}")
+    print(f"  Min:    {stats['min']:.2f}")
+    print(f"  Q1:     {stats['Q1']:.2f}")
+    print(f"  Q2:     {stats['Q2']:.2f}")
+    print(f"  Q3:     {stats['Q3']:.2f}")
+    print(f"  Max:    {stats['max']:.2f}")
+    print(f"  Range:  {stats['range']:.2f}")
+    print(f"  IQR:    {stats['IQR']:.2f}")
+    
 # Figure 1
 plt.figure(figsize=(12, 5))
 plt.subplot(1, 2, 1)
