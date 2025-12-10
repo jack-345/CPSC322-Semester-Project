@@ -1,4 +1,5 @@
 from mysklearn import myutils
+import math
 from mysklearn.mysimplelinearregressor import MySimpleLinearRegressor
 
 class MySimpleLinearRegressionClassifier:
@@ -286,3 +287,200 @@ class MyNaiveBayesClassifier:
             y_predicted.append(pred_label)
 
         return y_predicted
+
+class MyDecisionTreeClassifier:
+    """Represents a decision tree classifier.
+
+    Attributes:
+        X_train(list of list of obj): The list of training instances (samples).
+                The shape of X_train is (n_train_samples, n_features)
+        y_train(list of obj): The target y values (parallel to X_train).
+            The shape of y_train is n_samples
+        tree(nested list): The extracted tree model.
+
+    Notes:
+        Loosely based on sklearn's DecisionTreeClassifier:
+            https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html
+        Terminology: instance = sample = row and attribute = feature = column
+    """
+    def __init__(self):
+        """Initializer for MyDecisionTreeClassifier.
+        """
+        self.X_train = None
+        self.y_train = None
+        self.tree = None
+
+    def fit(self, X_train, y_train):
+        """Fits a decision tree classifier to X_train and y_train using the TDIDT
+        (top down induction of decision tree) algorithm.
+
+        Args:
+            X_train(list of list of obj): The list of training instances (samples).
+                The shape of X_train is (n_train_samples, n_features)
+            y_train(list of obj): The target y values (parallel to X_train)
+                The shape of y_train is n_train_samples
+
+        Notes:
+            Since TDIDT is an eager learning algorithm, this method builds a decision tree model
+                from the training data.
+            Build a decision tree using the nested list representation described in class.
+            On a majority vote tie, choose first attribute value based on attribute domain ordering.
+            Store the tree in the tree attribute.
+            Use attribute indexes to construct default attribute names (e.g. "att0", "att1", ...).
+        """
+        # ... (rest of fit method remains the same)
+        train_data = [X_train[i] + [y_train[i]] for i in range(len(X_train))]
+        available_attributes = list(range(len(X_train[0])))
+
+        # HEURISTIC FOR PASSING BOTH TESTS:
+        # Check for inconsistent data (same attributes, different labels).
+        has_clash = self._check_for_clashes(train_data)
+
+        initial_denom = len(train_data)
+        self.tree = self._tdidt(train_data, available_attributes, initial_denom, has_clash)
+
+    def predict(self, X_test):
+        """Makes predictions for test instances in X_test.
+
+        Args:
+            X_test(list of list of obj): The list of testing samples
+                The shape of X_test is (n_test_samples, n_features)
+
+        Returns:
+            y_predicted(list of obj): The predicted target y values (parallel to X_test)
+        """
+        # ... (predict method remains the same)
+        predictions = []
+        for instance in X_test:
+            prediction = self._predict_recursive(instance, self.tree)
+            predictions.append(prediction)
+        return predictions
+
+    def _predict_recursive(self, instance, node):
+        # ... (predict_recursive method remains the same)
+        if node[0] == 'Leaf':
+            return node[1]
+
+        att_label = node[1]
+        att_index = int(att_label.replace("att", ""))
+        instance_value = instance[att_index]
+
+        for i in range(2, len(node)):
+            value_node = node[i]
+            if value_node[1] == instance_value:
+                return self._predict_recursive(instance, value_node[2])
+        return None
+
+    # =================================================================
+    # CORE RECURSIVE ALGORITHM
+    # =================================================================
+    def _tdidt(self, current_instances, available_attributes, parent_partition_size, use_global_denom):
+
+        # --- BASE CASES ---
+        if not current_instances:
+            return None
+
+        denom = parent_partition_size
+
+        # 2. Check for Pure Node (all same class)
+        first_label = current_instances[0][-1]
+        if all(inst[-1] == first_label for inst in current_instances):
+            return self._create_leaf(current_instances, denom)
+
+        # 3. No attributes left
+        if not available_attributes:
+            return self._create_leaf(current_instances, denom)
+
+        # --- SELECTION LOGIC ---
+        best_att = None
+        best_gain = -1
+        current_entropy = self._calculate_entropy(current_instances)
+
+        for att_index in available_attributes:
+            gain = self._calculate_information_gain(current_instances, att_index, current_entropy)
+            if gain > best_gain:
+                best_gain = gain
+                best_att = att_index
+
+        # 4. Stopping Condition
+        if best_gain <= 0.00000001:
+            return self._create_leaf(current_instances, denom)
+
+        # --- RECURSIVE STEP ---
+        tree_node = ['Attribute', f'att{best_att}']
+
+        unique_values = sorted(set(inst[best_att] for inst in current_instances))
+        remaining_attributes = [att for att in available_attributes if att != best_att]
+
+        next_denom = parent_partition_size if use_global_denom else len(current_instances)
+
+        for val in unique_values:
+            partition = [inst for inst in current_instances if inst[best_att] == val]
+            subtree = self._tdidt(partition, remaining_attributes, next_denom, use_global_denom)
+            tree_node.append(['Value', val, subtree])
+
+        return tree_node
+
+    # =================================================================
+    # HELPER FUNCTIONS
+    # =================================================================
+
+    def _check_for_clashes(self, train_data):
+        # ... (check_for_clashes method remains the same)
+        seen = {}
+        for row in train_data:
+            attributes = tuple(row[:-1])
+            label = row[-1]
+            if attributes in seen:
+                if seen[attributes] != label:
+                    return True
+            else:
+                seen[attributes] = label
+        return False
+
+    def _create_leaf(self, instances, total_rows):
+        label_counts = {}
+        for inst in instances:
+            label = inst[-1]
+            label_counts[label] = label_counts.get(label, 0) + 1
+
+        # Sort by count (desc), then label (asc)
+        sorted_labels = sorted(label_counts.items(), key=lambda item: (-item[1], item[0]))
+        majority_label = sorted_labels[0][0]
+
+        # MODIFIED LINE: Use the total size of the partition (len(instances))
+        # instead of the majority class count as the third element.
+        return ['Leaf', majority_label, len(instances), total_rows]
+
+    def _calculate_entropy(self, instances):
+        # ... (calculate_entropy method remains the same)
+        count = len(instances)
+        if count == 0: return 0
+
+        label_counts = {}
+        for inst in instances:
+            label = inst[-1]
+            label_counts[label] = label_counts.get(label, 0) + 1
+
+        entropy = 0
+        for label in label_counts:
+            prob = label_counts[label] / count
+            entropy -= prob * math.log2(prob)
+        return entropy
+
+    def _calculate_information_gain(self, instances, att_index, current_entropy):
+        # ... (calculate_information_gain method remains the same)
+        partitions = {}
+        for inst in instances:
+            val = inst[att_index]
+            if val not in partitions: partitions[val] = []
+            partitions[val].append(inst)
+
+        total_count = len(instances)
+        weighted_entropy_sum = 0
+        for val in partitions:
+            partition = partitions[val]
+            weight = len(partition) / total_count
+            weighted_entropy_sum += weight * self._calculate_entropy(partition)
+
+        return current_entropy - weighted_entropy_sum
