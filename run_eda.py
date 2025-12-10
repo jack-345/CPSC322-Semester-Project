@@ -88,22 +88,22 @@ for category in ['Low', 'Medium', 'High']:
 plt.figure(figsize=(12, 5))
 plt.subplot(1, 2, 1)
 plt.hist(crop_yield, bins=30)
-plt.axvline(p33, color='red', linestyle='--')
-plt.axvline(p67, color='orange', linestyle='--')
+plt.axvline(percent_33, color='red', linestyle='--')
+plt.axvline(percent_67, color='orange', linestyle='--')
 plt.xlabel('Crop Yield')
 plt.ylabel('Frequency')
 plt.title('Yield Distribution')
 
 plt.subplot(1, 2, 2)
 plt.bar(['Low', 'Medium', 'High'], 
-        [category_counts.get('Low', 0), category_counts.get('Medium', 0), category_counts.get('High', 0)])
+        [category_count.get('Low', 0), category_count.get('Medium', 0), category_count.get('High', 0)])
 plt.xlabel('Category')
 plt.ylabel('Count')
 plt.title('Class Distribution')
 
 plt.tight_layout()
 plt.savefig('figures/figure1_target.pdf')
-print("[✓] Figure 1")
+print("Figure 1")
 plt.close()
 
 # Figure 2: Climate
@@ -130,7 +130,7 @@ plt.title('Weather Events')
 
 plt.tight_layout()
 plt.savefig('figures/figure2_climate.pdf')
-print("[✓] Figure 2")
+print("Figure 2")
 plt.close()
 
 # Figure 3: Agriculture
@@ -157,7 +157,7 @@ plt.title('Soil Health')
 
 plt.tight_layout()
 plt.savefig('figures/figure3_agriculture.pdf')
-print("[✓] Figure 3")
+print("Figure 3")
 plt.close()
 
 # Figure 4: Categorical
@@ -173,7 +173,7 @@ for i, col in enumerate(['Country', 'Region', 'Crop_Type', 'Adaptation_Strategie
 
 plt.tight_layout()
 plt.savefig('figures/figure4_categorical.pdf')
-print("[✓] Figure 4")
+print("Figure 4")
 plt.close()
 
 # Figure 5: Box plots
@@ -186,16 +186,16 @@ for i, (col, label) in enumerate([
 ], 1):
     plt.subplot(2, 2, i)
     values = get_column_numeric(table, header, col)
-    low = [values[j] for j, cat in enumerate(yield_category) if cat == 'Low' and j < len(values)]
-    med = [values[j] for j, cat in enumerate(yield_category) if cat == 'Medium' and j < len(values)]
-    high = [values[j] for j, cat in enumerate(yield_category) if cat == 'High' and j < len(values)]
+    low = [values[j] for j, cat in enumerate(yield_catgory) if cat == 'Low' and j < len(values)]
+    med = [values[j] for j, cat in enumerate(yield_catgory) if cat == 'Medium' and j < len(values)]
+    high = [values[j] for j, cat in enumerate(yield_catgory) if cat == 'High' and j < len(values)]
     plt.boxplot([low, med, high], labels=['Low', 'Med', 'High'])
     plt.ylabel(label)
     plt.title(f'{label} by Yield')
 
 plt.tight_layout()
 plt.savefig('figures/figure5_boxplots.pdf')
-print("[✓] Figure 5")
+print("Figure 5")
 plt.close()
 
 # Figure 6: Scatter
@@ -211,7 +211,7 @@ for i, (col, label) in enumerate([
     plt.subplot(2, 2, i)
     values = get_column_numeric(table, header, col)
     for cat in ['Low', 'Medium', 'High']:
-        idx = [j for j, c in enumerate(yield_category) if c == cat]
+        idx = [j for j, c in enumerate(yield_catgory) if c == cat]
         x = [values[j] for j in idx if j < len(values)]
         y = [crop_yield[j] for j in idx if j < len(crop_yield)]
         plt.scatter(x, y, c=colors[cat], label=cat, s=10, alpha=0.5)
@@ -222,7 +222,7 @@ for i, (col, label) in enumerate([
 
 plt.tight_layout()
 plt.savefig('figures/figure6_scatter.pdf')
-print("[✓] Figure 6")
+print("Figure 6")
 plt.close()
 
 #AI ACKNOWLEDGEMENT 
