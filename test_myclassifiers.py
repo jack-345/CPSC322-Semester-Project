@@ -1,4 +1,6 @@
 from mysklearn.myclassifiers import MyDecisionTreeClassifier
+from mysklearn.myclassifiers import MyRandomForestClassifier
+import numpy as np
 # decision tree tests
 def test_decision_tree_classifier_fit():
     # interview dataset
@@ -166,3 +168,95 @@ def test_decision_tree_classifier_predict():
     y_pred_iphone = iphone_classifier.predict(X_test_iphone)
 
     assert y_pred_iphone == y_expected_iphone
+
+# random forest testing
+# AI ACKNOWLEDGEMENT
+# random forest unit tests generated using Claude for help
+def test_fit_creates_trees():
+    """Test that fit creates the correct number of trees."""
+    np.random.seed(42)
+    X_train = [[1, 0], [1, 1], [0, 0], [0, 1]]
+    y_train = ['yes', 'yes', 'no', 'no']
+
+    rf = MyRandomForestClassifier(n_trees=5)
+    rf.fit(X_train, y_train)
+    assert len(rf.trees) == 5
+
+def test_predict_returns_correct_length():
+    """Test that predict returns correct number of predictions."""
+    np.random.seed(42)
+    X_train = [[1, 0], [1, 1], [0, 0], [0, 1]]
+    y_train = ['yes', 'yes', 'no', 'no']
+
+    rf = MyRandomForestClassifier(n_trees=3)
+    rf.fit(X_train, y_train)
+    X_test = [[1, 0], [0, 1]]
+    predictions = rf.predict(X_test)
+    assert len(predictions) == 2
+
+def test_predict_with_training_data():
+    """Test predictions on training data."""
+    np.random.seed(42)
+    X_train = [[1, 0], [1, 1], [0, 0], [0, 1]]
+    y_train = ['yes', 'yes', 'no', 'no']
+
+    rf = MyRandomForestClassifier(n_trees=10)
+    rf.fit(X_train, y_train)
+    predictions = rf.predict(X_train)
+    assert len(predictions) == len(y_train)
+    assert predictions[0] in ['yes', 'no']
+
+def test_single_class_dataset():
+    """Test with all instances having same label."""
+    np.random.seed(42)
+    X = [[1, 2], [3, 4], [5, 6]]
+    y = ['yes', 'yes', 'yes']
+
+    rf = MyRandomForestClassifier(n_trees=3)
+    rf.fit(X, y)
+    predictions = rf.predict([[7, 8]])
+    assert predictions[0] == 'yes'
+
+def test_max_depth_limit():
+    """Test that max_depth is respected."""
+    np.random.seed(42)
+    X_train = [[1, 0], [1, 1], [0, 0], [0, 1]]
+    y_train = ['yes', 'yes', 'no', 'no']
+
+    rf = MyRandomForestClassifier(n_trees=1, max_depth=1)
+    rf.fit(X_train, y_train)
+    assert rf.trees[0] is not None
+
+def test_majority_vote():
+    """Test majority vote calculation."""
+    rf = MyRandomForestClassifier()
+
+    result = rf._get_majority_vote(['yes', 'yes', 'no'])
+    assert result == 'yes'
+
+    result = rf._get_majority_vote(['no', 'no', 'yes'])
+    assert result == 'no'
+
+
+def test_entropy_calculation():
+    """Test entropy calculation."""
+    rf = MyRandomForestClassifier()
+
+    # Pure entropy (all same)
+    entropy = rf._calculate_entropy(['yes', 'yes', 'yes'])
+    assert abs(entropy - 0.0) < 0.001
+
+    # Maximum entropy (50-50 split)
+    entropy = rf._calculate_entropy(['yes', 'no'])
+    assert abs(entropy - 1.0) < 0.001
+
+def test_empty_predictions():
+    """Test predict with empty test set."""
+    np.random.seed(42)
+    X_train = [[1, 0], [1, 1], [0, 0], [0, 1]]
+    y_train = ['yes', 'yes', 'no', 'no']
+
+    rf = MyRandomForestClassifier(n_trees=3)
+    rf.fit(X_train, y_train)
+    predictions = rf.predict([])
+    assert len(predictions) == 0
