@@ -84,257 +84,146 @@ for category in ['Low', 'Medium', 'High']:
     print(f" {category}: {count} ({percentage:.1f}%)")
 
 
-#Frequency Table for Target Variable Distribution 
-
+# Figure 1
 plt.figure(figsize=(12, 5))
-
 plt.subplot(1, 2, 1)
-plt.hist(crop_yield, bins=30, color='skyblue', edgecolor='black')
-plt.axvline(percent_33, color='red', linestyle='--', linewidth=2, label='Low/Medium')
-plt.axvline(percent_67, color='orange', linestyle='--', linewidth=2, label='Medium/High')
-plt.xlabel('Crop Yield (MT per HA)')
+plt.hist(crop_yield, bins=30)
+plt.axvline(p33, color='red', linestyle='--')
+plt.axvline(p67, color='orange', linestyle='--')
+plt.xlabel('Crop Yield')
 plt.ylabel('Frequency')
-plt.title('Crop Yield Distribution (Continuous)')
-plt.legend()
-plt.grid(True, alpha=0.3)
+plt.title('Yield Distribution')
 
 plt.subplot(1, 2, 2)
-categories = ['Low', 'Medium', 'High']
-counts = [category_count.get(cat, 0) for cat in categories]
-colors =  ['#ff6b6b','#ffd93d','#6bcf7f']
-plt.bar(categories, counts, color=colors, edgecolor='black')
-plt.xlabel('Yield Category')
+plt.bar(['Low', 'Medium', 'High'], 
+        [category_counts.get('Low', 0), category_counts.get('Medium', 0), category_counts.get('High', 0)])
+plt.xlabel('Category')
 plt.ylabel('Count')
-plt.title('Target Variable: Class Distribution')
-plt.grid(True, axis='y', alpha=0.3)
+plt.title('Class Distribution')
 
 plt.tight_layout()
-plt.savefig('figures/figure1_target_distribution.pdf')
-print("\n Figure 1: Target variable distribution (frequency diagrams)")
-plt.show()
+plt.savefig('figures/figure1_target.pdf')
+print("[✓] Figure 1")
+plt.close()
 
-#Climate variables -- Frequency Diagram
-
+# Figure 2: Climate
 plt.figure(figsize=(12, 8))
-
 plt.subplot(2, 2, 1)
-temp = get_column_numeric(table, header, 'Average_Temperature_C')
-plt.hist(temp, bins=25, color='coral', edgecolor='black')
+plt.hist(get_column_numeric(table, header, 'Average_Temperature_C'), bins=25)
 plt.xlabel('Temperature (°C)')
-plt.ylabel('Frequency')
-plt.title('Temperature Distribution')
-plt.grid(True, alpha=0.3)
+plt.title('Temperature')
 
 plt.subplot(2, 2, 2)
-precip = get_column_numeric(table, header, 'Total_Precipitation_mm')
-plt.hist(precip, bins=25, color='skyblue', edgecolor='black')
+plt.hist(get_column_numeric(table, header, 'Total_Precipitation_mm'), bins=25)
 plt.xlabel('Precipitation (mm)')
-plt.ylabel('Frequency')
-plt.title('Precipitation Distribution')
-plt.grid(True, alpha=0.3)
+plt.title('Precipitation')
 
 plt.subplot(2, 2, 3)
-co2 = get_column_numeric(table, header, 'CO2_Emissions_MT')
-plt.hist(co2, bins=25, color='lightgray', edgecolor='black')
-plt.xlabel('CO2 Emissions (MT)')
-plt.ylabel('Frequency')
-plt.title('CO2 Emissions Distribution')
-plt.grid(True, alpha=0.3)
+plt.hist(get_column_numeric(table, header, 'CO2_Emissions_MT'), bins=25)
+plt.xlabel('CO2 (MT)')
+plt.title('CO2')
 
 plt.subplot(2, 2, 4)
-weather = get_column_numeric(table, header, 'Extreme_Weather_Events')
-plt.hist(weather, bins=20, color='salmon', edgecolor='black')
-plt.xlabel('Extreme Weather Events')
-plt.ylabel('Frequency')
-plt.title('Extreme Weather Distribution')
-plt.grid(True, alpha=0.3)
+plt.hist(get_column_numeric(table, header, 'Extreme_Weather_Events'), bins=20)
+plt.xlabel('Events')
+plt.title('Weather Events')
 
 plt.tight_layout()
-plt.savefig('figures/figure2_climate_distributions.pdf')
-print("Figure 2: Climate variable distributions (frequency diagrams)")
-plt.show()
+plt.savefig('figures/figure2_climate.pdf')
+print("[✓] Figure 2")
+plt.close()
 
-#Agriculture variable graphs (soil health, fertilizer, irrigation access, pesticide use, soil health)
-
-
+# Figure 3: Agriculture
 plt.figure(figsize=(12, 8))
-
 plt.subplot(2, 2, 1)
-irrigation = get_column_numeric(table, header, 'Irrigation_Access_%')
-plt.hist(irrigation, bins=25, color='lightblue', edgecolor='black')
-plt.xlabel('Irrigation Access (%)')
-plt.ylabel('Frequency')
-plt.title('Irrigation Access Distribution')
-plt.grid(True, alpha=0.3)
+plt.hist(get_column_numeric(table, header, 'Irrigation_Access_%'), bins=25)
+plt.xlabel('Irrigation (%)')
+plt.title('Irrigation')
 
 plt.subplot(2, 2, 2)
-pesticide = get_column_numeric(table, header, 'Pesticide_Use_KG_per_HA')
-plt.hist(pesticide, bins=25, color='lightgreen', edgecolor='black')
-plt.xlabel('Pesticide Use (KG/HA)')
-plt.ylabel('Frequency')
-plt.title('Pesticide Use Distribution')
-plt.grid(True, alpha=0.3)
+plt.hist(get_column_numeric(table, header, 'Pesticide_Use_KG_per_HA'), bins=25)
+plt.xlabel('Pesticide')
+plt.title('Pesticide')
 
 plt.subplot(2, 2, 3)
-fertilizer = get_column_numeric(table, header, 'Fertilizer_Use_KG_per_HA')
-plt.hist(fertilizer, bins=25, color='wheat', edgecolor='black')
-plt.xlabel('Fertilizer Use (KG/HA)')
-plt.ylabel('Frequency')
-plt.title('Fertilizer Use Distribution')
-plt.grid(True, alpha=0.3)
+plt.hist(get_column_numeric(table, header, 'Fertilizer_Use_KG_per_HA'), bins=25)
+plt.xlabel('Fertilizer')
+plt.title('Fertilizer')
 
 plt.subplot(2, 2, 4)
-soil = get_column_numeric(table, header, 'Soil_Health_Index')
-plt.hist(soil, bins=25, color='sandybrown', edgecolor='black')
-plt.xlabel('Soil Health Index')
-plt.ylabel('Frequency')
-plt.title('Soil Health Distribution')
-plt.grid(True, alpha=0.3)
+plt.hist(get_column_numeric(table, header, 'Soil_Health_Index'), bins=25)
+plt.xlabel('Soil Health')
+plt.title('Soil Health')
 
 plt.tight_layout()
-plt.savefig('figures/figure3_agricultural_distributions.pdf')
-print("Figure 3: Agricultural variable distributions (frequency diagrams)")
-plt.show()
+plt.savefig('figures/figure3_agriculture.pdf')
+print("[✓] Figure 3")
+plt.close()
 
-
-#Categorical Variables (country, region, crop type, adaption strategies)
-
+# Figure 4: Categorical
 plt.figure(figsize=(14, 10))
-
-categorical_cols = ['Country', 'Region', 'Crop_Type', 'Adaptation_Strategies']
-
-for i, col_name in enumerate(categorical_cols, 1):
+for i, col in enumerate(['Country', 'Region', 'Crop_Type', 'Adaptation_Strategies'], 1):
     plt.subplot(2, 2, i)
-    
-    values = get_column(table, header, col_name)
-    freq_dict = get_frequency_table(values)
-    sorted_items = sorted(freq_dict.items(), key=lambda x: x[1], reverse=True)[:10]
-    
-    labels = [item[0] for item in sorted_items]
-    counts = [item[1] for item in sorted_items]
-    
-    plt.barh(labels, counts, color='steelblue', edgecolor='black')
+    values = get_column(table, header, col)
+    freq = get_frequency_table(values)
+    top10 = sorted(freq.items(), key=lambda x: x[1], reverse=True)[:10]
+    plt.barh([x[0] for x in top10], [x[1] for x in top10])
     plt.xlabel('Count')
-    plt.ylabel(col_name.replace('_', ' '))
-    plt.title(f'Top 10 {col_name.replace("_", " ")}')
-    plt.grid(True, axis='x', alpha=0.3)
+    plt.title(f'{col}')
 
 plt.tight_layout()
-plt.savefig('figures/figure4_categorical_distributions.pdf')
-print("Figure 4: Categorical variable distributions (frequency diagrams)")
-plt.show()
+plt.savefig('figures/figure4_categorical.pdf')
+print("[✓] Figure 4")
+plt.close()
 
-#Figure 5 --> box and whisker plot for yield categories 
-
+# Figure 5: Box plots
 plt.figure(figsize=(14, 10))
-
-key_vars = [
-    ('Average_Temperature_C', 'Temperature (°C)'),
-    ('Total_Precipitation_mm', 'Precipitation (mm)'),
-    ('Soil_Health_Index', 'Soil Health Index'),
-    ('Irrigation_Access_%', 'Irrigation Access (%)')
-]
-
-for i, (col_name, label) in enumerate(key_vars, 1):
+for i, (col, label) in enumerate([
+    ('Average_Temperature_C', 'Temp'),
+    ('Total_Precipitation_mm', 'Precip'),
+    ('Soil_Health_Index', 'Soil'),
+    ('Irrigation_Access_%', 'Irrigation')
+], 1):
     plt.subplot(2, 2, i)
-    
-    # Get data for each category
-    values = get_column_numeric(table, header, col_name)
-    low_vals = [values[j] for j, cat in enumerate(yield_catgory) if cat == 'Low' and j < len(values)]
-    med_vals = [values[j] for j, cat in enumerate(yield_catgory) if cat == 'Medium' and j < len(values)]
-    high_vals = [values[j] for j, cat in enumerate(yield_catgory) if cat == 'High' and j < len(values)]
-    
-    # Create box plot
-    data_to_plot = [low_vals, med_vals, high_vals]
-    bp = plt.boxplot(data_to_plot, labels=['Low', 'Medium', 'High'],
-                     patch_artist=True)
-    
-    # Color the boxes
-    colors = ['#ff6b6b', '#ffd93d', '#6bcf7f']
-    for patch, color in zip(bp['boxes'], colors):
-        patch.set_facecolor(color)
-    
-    plt.xlabel('Yield Category')
+    values = get_column_numeric(table, header, col)
+    low = [values[j] for j, cat in enumerate(yield_category) if cat == 'Low' and j < len(values)]
+    med = [values[j] for j, cat in enumerate(yield_category) if cat == 'Medium' and j < len(values)]
+    high = [values[j] for j, cat in enumerate(yield_category) if cat == 'High' and j < len(values)]
+    plt.boxplot([low, med, high], labels=['Low', 'Med', 'High'])
     plt.ylabel(label)
-    plt.title(f'{label} by Yield Category')
-    plt.grid(True, axis='y', alpha=0.3)
+    plt.title(f'{label} by Yield')
 
 plt.tight_layout()
-plt.savefig('figures/figure5_box_whisker_plots.pdf')
-print("Figure 5: Box and whisker plots (comparison by yield category)")
-plt.show()
+plt.savefig('figures/figure5_boxplots.pdf')
+print("[✓] Figure 5")
+plt.close()
 
-
-# Scatter Plots and potentially interesting relationships 
+# Figure 6: Scatter
 plt.figure(figsize=(14, 10))
+colors = {'Low': 'red', 'Medium': 'yellow', 'High': 'green'}
 
-color_map = {'Low': 'red', 'Medium': 'yellow', 'High': 'green'}
-
-# Temperature vs Yield
-plt.subplot(2, 2, 1)
-temp = get_column_numeric(table, header, 'Average_Temperature_C')
-for category in ['Low', 'Medium', 'High']:
-    indices = [i for i, cat in enumerate(yield_catgory) if cat == category]
-    cat_temps = [temp[i] for i in indices if i < len(temp)]
-    cat_yields = [crop_yield[i] for i in indices if i < len(crop_yield)]
-    plt.scatter(cat_temps, cat_yields, c=color_map[category], 
-                label=category, alpha=0.5, s=20)
-plt.xlabel('Temperature (°C)')
-plt.ylabel('Crop Yield (MT/HA)')
-plt.title('Temperature vs Crop Yield')
-plt.legend()
-plt.grid(True, alpha=0.3)
-
-# Precipitation vs Yield
-plt.subplot(2, 2, 2)
-precip = get_column_numeric(table, header, 'Total_Precipitation_mm')
-for category in ['Low', 'Medium', 'High']:
-    indices = [i for i, cat in enumerate(yield_catgory) if cat == category]
-    cat_precips = [precip[i] for i in indices if i < len(precip)]
-    cat_yields = [crop_yield[i] for i in indices if i < len(crop_yield)]
-    plt.scatter(cat_precips, cat_yields, c=color_map[category], 
-                label=category, alpha=0.5, s=20)
-plt.xlabel('Precipitation (mm)')
-plt.ylabel('Crop Yield (MT/HA)')
-plt.title('Precipitation vs Crop Yield')
-plt.legend()
-plt.grid(True, alpha=0.3)
-
-# Soil Health vs Yield
-plt.subplot(2, 2, 3)
-soil = get_column_numeric(table, header, 'Soil_Health_Index')
-for category in ['Low', 'Medium', 'High']:
-    indices = [i for i, cat in enumerate(yield_catgory) if cat == category]
-    cat_soils = [soil[i] for i in indices if i < len(soil)]
-    cat_yields = [crop_yield[i] for i in indices if i < len(crop_yield)]
-    plt.scatter(cat_soils, cat_yields, c=color_map[category], 
-                label=category, alpha=0.5, s=20)
-plt.xlabel('Soil Health Index')
-plt.ylabel('Crop Yield (MT/HA)')
-plt.title('Soil Health vs Crop Yield')
-plt.legend()
-plt.grid(True, alpha=0.3)
-
-# Irrigation vs Yield
-plt.subplot(2, 2, 4)
-irrigation = get_column_numeric(table, header, 'Irrigation_Access_%')
-for category in ['Low', 'Medium', 'High']:
-    indices = [i for i, cat in enumerate(yield_catgory) if cat == category]
-    cat_irrig = [irrigation[i] for i in indices if i < len(irrigation)]
-    cat_yields = [crop_yield[i] for i in indices if i < len(crop_yield)]
-    plt.scatter(cat_irrig, cat_yields, c=color_map[category], 
-                label=category, alpha=0.5, s=20)
-plt.xlabel('Irrigation Access (%)')
-plt.ylabel('Crop Yield (MT/HA)')
-plt.title('Irrigation Access vs Crop Yield')
-plt.legend()
-plt.grid(True, alpha=0.3)
+for i, (col, label) in enumerate([
+    ('Average_Temperature_C', 'Temp'),
+    ('Total_Precipitation_mm', 'Precip'),
+    ('Soil_Health_Index', 'Soil'),
+    ('Irrigation_Access_%', 'Irrigation')
+], 1):
+    plt.subplot(2, 2, i)
+    values = get_column_numeric(table, header, col)
+    for cat in ['Low', 'Medium', 'High']:
+        idx = [j for j, c in enumerate(yield_category) if c == cat]
+        x = [values[j] for j in idx if j < len(values)]
+        y = [crop_yield[j] for j in idx if j < len(crop_yield)]
+        plt.scatter(x, y, c=colors[cat], label=cat, s=10, alpha=0.5)
+    plt.xlabel(label)
+    plt.ylabel('Yield')
+    plt.title(f'{label} vs Yield')
+    plt.legend()
 
 plt.tight_layout()
-plt.savefig('figures/figure6_scatter_relationships.pdf')
-print("Figure 6: Scatter plots showing interesting relationships")
-plt.show()
-
+plt.savefig('figures/figure6_scatter.pdf')
+print("[✓] Figure 6")
+plt.close()
 
 #AI ACKNOWLEDGEMENT 
 #graphs created using Claude AI
