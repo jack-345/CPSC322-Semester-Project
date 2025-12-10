@@ -1,4 +1,5 @@
 from mysklearn.myclassifiers import MyDecisionTreeClassifier
+from mysklearn.myclassifiers import MyRandomForestClassifier
 # decision tree tests
 def test_decision_tree_classifier_fit():
     # interview dataset
@@ -166,3 +167,5 @@ def test_decision_tree_classifier_predict():
     y_pred_iphone = iphone_classifier.predict(X_test_iphone)
 
     assert y_pred_iphone == y_expected_iphone
+
+# random forest testing
